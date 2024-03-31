@@ -1,0 +1,10 @@
+@import "../variables/global";
+
+:root {
+  --bg-color: #{$lite};
+  --revert-bg-color: #{$dark};
+  --primary-color: #{$primary-dark};
+  --secondary-color: #{$secondary-dark};
+  --revert-primary-color: #{$primary};
+  --revert-secondary-color: #{$secondary};
+}

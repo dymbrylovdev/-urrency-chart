@@ -24,14 +24,14 @@ ThunkConfig<string>
     const dateForm = state.currency?.dates;
     const chartData = state.currency?.chartData;
     let count = 0;
-    console.log('dateForm', dateForm);
+
     try {
       if (!dateForm) {
         throw new Error();
       }
       const promiseArr = Array.from(dateForm)?.map(async (date) => {
         const hasData = dateForm?.has(date);
-        if (hasData) {
+        if (hasData) { // Если данные даты уже есть в кэше берем их
           const findChartData = chartData?.get(currency)?.find((item) => item?.date === date);
           if (findChartData) {
             return new Promise<AxiosResponse<IReturnTypeCurrencyByDate>>((resolve, reject) => {
@@ -47,6 +47,7 @@ ThunkConfig<string>
             });
           }
         }
+        // Если данные новые даты новые то кидаем запрос на получение новых данных
         count += 1;
         return extra.api.get<IReturnTypeCurrencyByDate>(`npm/@fawazahmed0/currency-api@${date}/v1/currencies/${currency}.json`);
       });

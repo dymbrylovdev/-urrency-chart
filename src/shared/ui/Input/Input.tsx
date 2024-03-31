@@ -43,6 +43,7 @@ export const Input = memo((props: InputProps) => {
     <div className={classNames(cls.InputWrapper, {}, [className])}>
       <div className={cls.caretWrapper}>
         <input
+          id={label}
           ref={ref}
           type={type}
           value={value}
@@ -54,9 +55,9 @@ export const Input = memo((props: InputProps) => {
         />
       </div>
       {label && (
-        <div className={cls.label}>
+        <label htmlFor={label} className={cls.label}>
           {`${label}`}
-        </div>
+        </label>
       )}
     </div>
   );

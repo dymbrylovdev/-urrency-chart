@@ -23,6 +23,7 @@ import {
 } from 'entities/Currency';
 import { LangSwitcher } from 'features/LangSwitcher';
 import { Input } from 'shared/ui';
+import cls from './Main.module.scss';
 
 ChartJS.register(
   CategoryScale,
@@ -33,22 +34,6 @@ ChartJS.register(
   Tooltip,
   Legend,
 );
-
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    customCanvasBackgroundColor: {
-      color: 'lightGreen',
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Line Chart',
-    },
-  },
-};
 
 interface IProps {
   className?: any;
@@ -72,9 +57,8 @@ const colorCurrency = {
     backgroundColor: 'rgb(231,125,107)',
   },
 };
-const MainPage: FC<IProps> = ({ className }) => {
-  const thisDatess = new Date();
-  const currentStartDate = new Date(thisDatess.setDate(thisDatess.getDate() - 5));
+const MainPage: FC<IProps> = () => {
+  const currentStartDate = new Date(new Date().setDate(new Date().getDate() - 5));
   const thisDate = new Date();
   const { t } = useTranslation();
   const chartData = useSelector((state: StateSchema) => state?.currency?.chartData);
@@ -85,7 +69,7 @@ const MainPage: FC<IProps> = ({ className }) => {
   const [endDate, setEndDate] = useState<Date | null>(thisDate);
   const dispatch = useDispatch();
 
-  const getDatesBetween = (startDate: Date, endDate: Date) => {
+  const getDatesBetween = (startDate: Date, endDate: Date) => { // Вычисляем даты от startDate до endDate
     const dates = [];
     const currentDate = new Date(startDate);
     while (currentDate.toISOString().slice(0, 10) <= endDate.toISOString().slice(0, 10)) {
@@ -97,7 +81,7 @@ const MainPage: FC<IProps> = ({ className }) => {
     return dates;
   };
 
-  useEffect(() => {
+  useEffect(() => { // запрос к API при каждом обновлении данных startDate, endDate, currency
     if (startDate && endDate) {
       const resultDates = getDatesBetween(startDate, endDate);
       if (resultDates) {
@@ -112,6 +96,7 @@ const MainPage: FC<IProps> = ({ className }) => {
     }
   }, [startDate, endDate, currency]);
 
+  // селект валют
   const setCurrency = useCallback((currencyItem: CurrencyType) => {
     if (currency?.some((item) => item === currencyItem)) {
       dispatch(currencyActions.removeCurrency(currencyItem));
@@ -141,52 +126,58 @@ const MainPage: FC<IProps> = ({ className }) => {
     }
   ), [dates, currency, chartData]);
 
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      customCanvasBackgroundColor: {
+        color: 'lightGreen',
+      },
+      title: {
+        display: true,
+        text: t('Графиков курса валют по отношению к рублю'),
+      },
+    },
+  };
+
+  const translateLabel: Record<CurrencyType, string> = {
+    [Currency.EUR]: t('Евро'),
+    [Currency.CNY]: t('Юань'),
+    [Currency.USD]: t('Доллар'),
+  };
+
   return (
     <DynamicModuleLoader
       removeAfterUnmount
       reducers={initialReducers}
     >
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        height: '100vh',
-        flex: 1,
-        gap: 60,
-      }}
-      >
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          gap: 60,
-        }}
-        >
+      <div className={cls.container}>
+        <div className={cls.wrapActions}>
           <div>
-            <Input label={Currency.EUR} type="checkbox" onClick={() => setCurrency(Currency.EUR)} />
-            <Input label={Currency.CNY} type="checkbox" onClick={() => setCurrency(Currency.CNY)} />
-            <Input label={Currency.USD} type="checkbox" onClick={() => setCurrency(Currency.USD)} />
+            <Input label={translateLabel[Currency.EUR]} type="checkbox" onClick={() => setCurrency(Currency.EUR)} />
+            <Input label={translateLabel[Currency.CNY]} type="checkbox" onClick={() => setCurrency(Currency.CNY)} />
+            <Input label={translateLabel[Currency.USD]} type="checkbox" onClick={() => setCurrency(Currency.USD)} />
           </div>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-          }}
-          >
+          <div className={cls.wrapDatePicker}>
             <label htmlFor="to">{t('Дата с')}</label>
             <DatePicker
               selected={startDate}
               onChange={(date) => setStartDate(() => date)}
               selectsStart
               startDate={startDate}
+              className={cls.datePicker}
               endDate={endDate}
               id="to"
               maxDate={endDate}
               dateFormat="MM/yyyy/dd"
             />
 
-            <label htmlFor="from">{t('Дата от')}</label>
+            <label htmlFor="from">{t('Дата по')}</label>
             <DatePicker
               id="from"
+              className={cls.datePicker}
               selected={endDate}
               onChange={(date) => setEndDate(() => date)}
               selectsEnd
@@ -205,12 +196,7 @@ const MainPage: FC<IProps> = ({ className }) => {
           <LangSwitcher />
         </div>
 
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          flex: 1,
-        }}
-        >
+        <div className={cls.wrapLine}>
           <Line
             redraw
             style={{ flex: '1 !important', height: 400 }}

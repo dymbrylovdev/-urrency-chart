@@ -27,3 +27,4 @@ npm run start
 - [chartjs](https://www.chartjs.org/docs/latest/)
 - [Redux-Toolkit](https://redux-toolkit.js.org/)
 - [FSD](https://feature-sliced.design/ru/docs)
+- [i18next](https://www.i18next.com/)

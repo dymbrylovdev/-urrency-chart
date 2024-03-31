@@ -1,0 +1,24 @@
+@import "./reset";
+@import "variables/global";
+@import "./themes/dark";
+@import "./themes/light";
+.app,
+.app_modal {
+  font: var(--font-l);
+  color: var(--primary-color);
+}
+
+.app {
+  background: var(--bg-color);
+  min-height: 100vh;
+}
+
+.container-content {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-wrapper {
+  flex-grow: 1;
+}

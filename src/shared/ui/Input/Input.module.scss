@@ -1,0 +1,50 @@
+.InputWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.label {
+    margin-right: 5px;
+}
+
+.input {
+    width: 100%;
+    height: 100%;
+    text-shadow: 0 0 0 var(--primary-color);
+    padding: 10px;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.caretWrapper {
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+    position: relative;
+}
+
+.caret {
+    height: 3px;
+    width: 9px;
+    background: var(--primary-color);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    animation: blink 0.7s forwards infinite;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.01;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
